@@ -1,25 +1,20 @@
 const express = require("express");
 const app = express();
-let { people } = require("./data");
 
-//static assests
-//import files from ./methods-public (html, css, javascript...etc)
+const people = require("./routes/people");
+const auth = require("./routes/auth");
+
+// static assets
 app.use(express.static("./methods-public"));
-//parse form data
+// parse form data
 app.use(express.urlencoded({ extended: false }));
+// parse json
+app.use(express.json());
 
-//GET
-app.get("/api/people", (req, res) => {
-  res.status(200).json({ success: true, data: people });
+app.use("/api/people", people);
+
+app.use("/login", auth);
+
+app.listen(5000, () => {
+  console.log("Server is listening on port 5000....");
 });
-
-//POST
-app.post("/login", (req, res) => {
-  const { name } = req.body;
-  if (name) {
-    return res.send(`Welcome ${name}`);
-  }
-  res.send("please provide credentials :P");
-});
-
-app.listen(5000, () => console.log(`App listening on port 5000!`));
